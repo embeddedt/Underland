@@ -1,0 +1,11 @@
+{
+  "type": "underland:underland",
+  "generator": {
+    "type": "minecraft:noise",
+    "settings": "underland:underland",
+    "biome_source": {
+      "type": "minecraft:fixed",
+      "biome": "underland:underland_cave"
+    }
+  }
+}

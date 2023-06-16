@@ -1,0 +1,30 @@
+{
+  "parent": "underland:underland/root",
+  "criteria": {
+    "took_darkness_damage": {
+      "conditions": {},
+      "trigger": "underland:darkness_damage"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.underland.damage.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:diamond_sword",
+      "nbt": "{Damage:0}"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.underland.damage.title"
+    }
+  },
+  "requirements": [
+    [
+      "took_darkness_damage"
+    ]
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "parent": "underland:underland/root",
+  "criteria": {
+    "placed_light_block": {
+      "conditions": {},
+      "trigger": "underland:placed_light_emitting_block"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.underland.light.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:torch"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.underland.light.title"
+    }
+  },
+  "requirements": [
+    [
+      "placed_light_block"
+    ]
+  ]
+}

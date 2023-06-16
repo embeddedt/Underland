@@ -1,0 +1,5 @@
+{
+  "type": "underland:underland_ore",
+  "biome": "underland:underland_cave",
+  "features": "#underland:ores"
+}

@@ -1,0 +1,15 @@
+{
+  "advancements.underland.damage.description": "Take damage from standing in darkness too long",
+  "advancements.underland.damage.title": "Watch Your Step",
+  "advancements.underland.light.description": "Place your first light source in the Underland",
+  "advancements.underland.light.title": "Drive Out The Darkness",
+  "advancements.underland.root.description": "Enter the Underland",
+  "advancements.underland.root.title": "It's Dark In Here...",
+  "block.underland.teleporter": "Teleporter",
+  "death.attack.underland.darkness": "%1$s spent too long in darkness",
+  "death.attack.underland.darkness.player": "%1$s spent too long in the darkness of %2$s",
+  "entity.underland.shadow": "Shadow",
+  "item.underland.shadow_spawn_egg": "Shadow Spawn Egg",
+  "itemGroup.underland": "Underland",
+  "underland.teleporter_out_of_range": "Teleporter is too high or too low"
+}
