@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "#": {
       "item": "minecraft:stone"
@@ -18,5 +19,6 @@
   ],
   "result": {
     "item": "underland:teleporter"
-  }
+  },
+  "show_notification": true
 }

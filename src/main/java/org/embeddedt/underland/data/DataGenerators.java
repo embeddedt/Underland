@@ -4,13 +4,16 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.*;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -23,6 +26,7 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
+import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.JsonCodecProvider;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -33,6 +37,8 @@ import org.embeddedt.underland.Underland;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 @Mod.EventBusSubscriber(modid = Underland.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
@@ -75,41 +81,50 @@ public class DataGenerators {
                     HeightRangePlacement.uniform(VerticalAnchor.aboveBottom(10), VerticalAnchor.belowTop(10))
             )))
             .build();
+
+    private static HolderLookup.Provider append(HolderLookup.Provider original, RegistrySetBuilder builder) {
+        return builder.buildPatch(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), original);
+    }
+
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
-        generator.addProvider(event.includeServer(), new Recipes(generator));
-        BlockTags blockTags = new BlockTags(generator, event.getExistingFileHelper());
+        generator.addProvider(event.includeServer(), new Recipes(generator.getPackOutput()));
+        BlockTags blockTags = new BlockTags(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper());
         generator.addProvider(event.includeServer(), blockTags);
-        generator.addProvider(event.includeServer(), new Advancements(generator, event.getExistingFileHelper()));
-        generator.addProvider(event.includeServer(), new ItemTags(generator, blockTags, event.getExistingFileHelper()));
-        generator.addProvider(event.includeClient(), new BlockStates(generator, event.getExistingFileHelper()));
-        generator.addProvider(event.includeClient(), new ItemModels(generator, event.getExistingFileHelper()));
-        generator.addProvider(event.includeClient(), new LanguageProvider(generator, "en_us"));
+        generator.addProvider(event.includeServer(), new Advancements(generator.getPackOutput(), event.getLookupProvider(), event.getExistingFileHelper()));
+        generator.addProvider(event.includeServer(), new ItemTags(generator.getPackOutput(), event.getLookupProvider(), blockTags.contentsGetter(), event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new BlockStates(generator.getPackOutput(), event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new ItemModels(generator.getPackOutput(), event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new LanguageProvider(generator.getPackOutput(), "en_us"));
 
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
-        RegistryAccess registryAccess = RegistryAccess.builtinCopy();
-        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, registryAccess);
-
-        Map<ResourceLocation, ConfiguredFeature<?, ?>> configuredFeatureMap = new HashMap<>();
-        Map<ResourceLocation, PlacedFeature> placedFeatureMap = new HashMap<>();
-
-        Registry<ConfiguredFeature<?, ?>> configuredFeatureRegistry = registryAccess.registryOrThrow(Registry.CONFIGURED_FEATURE_REGISTRY);
-
-        for(var entry : ORE_MAP.entrySet()) {
-            ResourceLocation key = new ResourceLocation(Underland.MODID, entry.getKey());
-            configuredFeatureMap.put(key, new ConfiguredFeature<>(Feature.ORE, simpleOre(entry.getValue().targetState(), entry.getValue().size())));
-            Holder<ConfiguredFeature<?, ?>> holder = configuredFeatureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, key));
-            placedFeatureMap.put(key, new PlacedFeature(holder, entry.getValue().modifiers()));
-        }
-
-        generator.addProvider(event.includeServer(), JsonCodecProvider.forDatapackRegistry(
-                generator, existingFileHelper, Underland.MODID, registryOps, Registry.CONFIGURED_FEATURE_REGISTRY, configuredFeatureMap));
-
-        generator.addProvider(event.includeServer(), JsonCodecProvider.forDatapackRegistry(
-                generator, existingFileHelper, Underland.MODID, registryOps, Registry.PLACED_FEATURE_REGISTRY, placedFeatureMap));
-
-        generator.addProvider(event.includeServer(), new UnderlandOreTagsProvider(generator, existingFileHelper, placedFeatureMap.keySet()));
+        RegistrySetBuilder builder = new RegistrySetBuilder();
+        builder.add(Registries.CONFIGURED_FEATURE, context -> {
+            for(var entry : ORE_MAP.entrySet()) {
+                ResourceLocation key = new ResourceLocation(Underland.MODID, entry.getKey());
+                context.register(ResourceKey.create(Registries.CONFIGURED_FEATURE, key), new ConfiguredFeature<>(Feature.ORE, simpleOre(entry.getValue().targetState(), entry.getValue().size())));
+            }
+        });
+        builder.add(Registries.PLACED_FEATURE, context -> {
+            var configuredLookup = context.lookup(Registries.CONFIGURED_FEATURE);
+            for(var entry : ORE_MAP.entrySet()) {
+                ResourceLocation key = new ResourceLocation(Underland.MODID, entry.getKey());
+                context.register(ResourceKey.create(Registries.PLACED_FEATURE, key), new PlacedFeature(configuredLookup.getOrThrow(ResourceKey.create(Registries.CONFIGURED_FEATURE, key)), entry.getValue().modifiers()));
+            }
+        });
+        builder.add(Registries.DAMAGE_TYPE, context -> {
+            context.register(Underland.DARKNESS, new DamageType("darkness", 0.1f));
+        });
+        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(generator.getPackOutput(), event.getLookupProvider(), builder, Set.of(Underland.MODID)));
+        CompletableFuture<HolderLookup.Provider> withDynProvider = event.getLookupProvider().thenApply(r -> append(r, builder));
+        generator.addProvider(event.includeServer(), new UnderlandOreTagsProvider(generator.getPackOutput(), existingFileHelper, withDynProvider, ORE_MAP.keySet()));
+        generator.addProvider(event.includeServer(), new TagsProvider<>(generator.getPackOutput(), Registries.DAMAGE_TYPE, withDynProvider, Underland.MODID, event.getExistingFileHelper()) {
+            @Override
+            protected void addTags(HolderLookup.Provider provider) {
+                this.tag(DamageTypeTags.BYPASSES_ARMOR).add(Underland.DARKNESS);
+            }
+        });
     }
 
     public static OreConfiguration simpleOre(BlockState desiredOre, int size) {

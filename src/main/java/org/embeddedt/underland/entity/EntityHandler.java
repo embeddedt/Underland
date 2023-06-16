@@ -1,7 +1,9 @@
 package org.embeddedt.underland.entity;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -55,10 +57,10 @@ public class EntityHandler {
     @SubscribeEvent
     public static void onLivingUpdate(TickEvent.PlayerTickEvent event) {
         int desiredDamage = UnderlandConfig.DARKNESS_DAMAGE.get();
-        if(desiredDamage == 0 || event.player.level.isClientSide || event.player.isCreative() || event.player.level.dimension() != Dimensions.UNDERLAND)
+        if(desiredDamage == 0 || event.player.level().isClientSide || event.player.isCreative() || event.player.level().dimension() != Dimensions.UNDERLAND)
             return;
         if(event.player.getLightLevelDependentMagicValue() <= 0.05f && (event.player.tickCount % (UnderlandConfig.DARKNESS_DAMAGE_TIMER.get() * 20)) == 0) {
-            event.player.hurt(Underland.DARKNESS, desiredDamage);
+            event.player.hurt(new DamageSource(event.player.level().holderLookup(Registries.DAMAGE_TYPE).getOrThrow(Underland.DARKNESS)), desiredDamage);
             Underland.DARKNESS_DAMAGE_TRIGGER.trigger((ServerPlayer)event.player);
         }
     }

@@ -27,5 +27,6 @@
     [
       "entered_underland"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

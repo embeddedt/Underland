@@ -26,5 +26,6 @@
     [
       "took_darkness_damage"
     ]
-  ]
+  ],
+  "sends_telemetry_event": true
 }

@@ -14,7 +14,7 @@ public class DarknessDamageTrigger extends SimpleCriterionTrigger<DarknessDamage
     }
 
     @Override
-    protected DarknessDamageTrigger.TriggerInstance createInstance(JsonObject pJson, EntityPredicate.Composite pPlayer, DeserializationContext pContext) {
+    protected DarknessDamageTrigger.TriggerInstance createInstance(JsonObject pJson, ContextAwarePredicate pPlayer, DeserializationContext pContext) {
         return new TriggerInstance(pPlayer);
     }
 
@@ -24,11 +24,11 @@ public class DarknessDamageTrigger extends SimpleCriterionTrigger<DarknessDamage
     }
 
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
-        public TriggerInstance(EntityPredicate.Composite pPlayer) {
+        public TriggerInstance(ContextAwarePredicate pPlayer) {
             super(ID, pPlayer);
         }
 
-        public static TriggerInstance tookDamage(EntityPredicate.Composite pPlayer) {
+        public static TriggerInstance tookDamage(ContextAwarePredicate pPlayer) {
             return new TriggerInstance(pPlayer);
         }
     }

@@ -1,12 +1,12 @@
 {
   "values": [
+    "underland:coal_ore",
+    "underland:iron_ore",
     "underland:lapis_ore",
+    "underland:redstone_ore",
     "underland:gold_ore",
     "underland:diamond_ore",
     "underland:emerald_ore",
-    "underland:infested_deepslate",
-    "underland:redstone_ore",
-    "underland:iron_ore",
-    "underland:coal_ore"
+    "underland:infested_deepslate"
   ]
 }

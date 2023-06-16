@@ -3,6 +3,7 @@ package org.embeddedt.underland.blocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -68,7 +69,7 @@ public class TeleporterBlock extends Block implements EntityBlock {
             if(pos.getY() <= (beneathLevel.getMinBuildHeight() + 1) || pos.getY() >= (beneathLevel.getMaxBuildHeight() - 5)) {
                 player.displayClientMessage(Component.translatable("underland.teleporter_out_of_range").withStyle(ChatFormatting.RED), true);
             } else if(level.getBlockEntity(pos) instanceof TeleporterBlockEntity tbe) {
-                teleportTo((ServerPlayer)player, pos, ResourceKey.create(Registry.DIMENSION_REGISTRY, tbe.getTargetDimension()));
+                teleportTo((ServerPlayer)player, pos, ResourceKey.create(Registries.DIMENSION, tbe.getTargetDimension()));
             }
             return InteractionResult.SUCCESS;
         }

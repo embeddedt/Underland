@@ -1,11 +1,12 @@
 package org.embeddedt.underland.data;
 
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import org.embeddedt.underland.Underland;
 
 public class LanguageProvider extends net.minecraftforge.common.data.LanguageProvider {
 
-    public LanguageProvider(DataGenerator gen, String locale) {
+    public LanguageProvider(PackOutput gen, String locale) {
         super(gen, Underland.MODID, locale);
     }
 
@@ -15,8 +16,8 @@ public class LanguageProvider extends net.minecraftforge.common.data.LanguagePro
         add(Underland.TELEPORTER.get(), "Teleporter");
         add(Underland.SHADOW.get(), "Shadow");
         add(Underland.SHADOW_EGG.get(), "Shadow Spawn Egg");
-        add("death.attack." + Underland.DARKNESS.getMsgId(), "%1$s spent too long in darkness");
-        add("death.attack." + Underland.DARKNESS.getMsgId() + ".player", "%1$s spent too long in the darkness of %2$s");
+        add("death.attack.darkness", "%1$s spent too long in darkness");
+        add("death.attack.darkness.player", "%1$s spent too long in the darkness of %2$s");
         add("advancements.underland.root.title", "It's Dark In Here...");
         add("advancements.underland.root.description", "Enter the Underland");
         add("advancements.underland.damage.title", "Watch Your Step");

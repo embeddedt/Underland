@@ -5,6 +5,7 @@
       "minecraft:cave_extra_underground"
     ]
   },
+  "has_precipitation": false,
   "downfall": 0.4,
   "effects": {
     "fog_color": 0,

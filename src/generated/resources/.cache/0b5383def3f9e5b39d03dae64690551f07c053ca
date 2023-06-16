@@ -1,9 +1,0 @@
-// 1.19.2	2023-05-09T12:41:31.005349042	worldgen/configured_feature generator for underland
-41d10bf1930b972e3516cf052a3c10eab287d772 data/underland/worldgen/configured_feature/coal_ore.json
-86343799fba785b411903829b8ff5446c5e834a2 data/underland/worldgen/configured_feature/diamond_ore.json
-f7c51dbf9606320f40c640ee76684dbd366fc560 data/underland/worldgen/configured_feature/emerald_ore.json
-199755aa0782f9b60e2f7d345e528eb6797be7d6 data/underland/worldgen/configured_feature/gold_ore.json
-06833b1b874efccb0d1afcdb8514f3d9ad0bc7f7 data/underland/worldgen/configured_feature/infested_deepslate.json
-4b7962f6725a70310718320cdda6134e59afd925 data/underland/worldgen/configured_feature/iron_ore.json
-ccba9e526fef42324c44a39475b1c3a290206e12 data/underland/worldgen/configured_feature/lapis_ore.json
-2713e222b9e91298cac112a6478223825fd9b587 data/underland/worldgen/configured_feature/redstone_ore.json

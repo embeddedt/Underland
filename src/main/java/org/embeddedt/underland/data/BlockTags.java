@@ -1,18 +1,21 @@
 package org.embeddedt.underland.data;
 
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
+import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.embeddedt.underland.Underland;
 
+import java.util.concurrent.CompletableFuture;
+
 public class BlockTags extends BlockTagsProvider {
 
-    public BlockTags(DataGenerator generator, ExistingFileHelper helper) {
-        super(generator, Underland.MODID, helper);
+    public BlockTags(PackOutput generator, CompletableFuture<HolderLookup.Provider> lookupProvider, ExistingFileHelper helper) {
+        super(generator, lookupProvider, Underland.MODID, helper);
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.Provider lookup) {
         tag(net.minecraft.tags.BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(Underland.TELEPORTER.get());
         tag(net.minecraft.tags.BlockTags.NEEDS_STONE_TOOL)
@@ -21,6 +24,6 @@ public class BlockTags extends BlockTagsProvider {
 
     @Override
     public String getName() {
-        return "Underland Tags";
+        return "Underland Block Tags";
     }
 }

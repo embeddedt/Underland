@@ -27,14 +27,14 @@ public class AvoidLightGoal extends Goal {
     }
     @Override
     public boolean canUse() {
-        int brightness = this.mob.level.getBrightness(LightLayer.BLOCK, new BlockPos(this.mob.position()));
+        int brightness = this.mob.level().getBrightness(LightLayer.BLOCK, BlockPos.containing(this.mob.position()));
         if(brightness == 0)
             return false;
         else {
             Vec3 vec3 = DefaultRandomPos.getPosAway(this.mob, 16, 7, this.mob.position());
             if(vec3 == null)
                 return false;
-            else if(this.mob.level.getBrightness(LightLayer.BLOCK, new BlockPos(vec3)) > brightness)
+            else if(this.mob.level().getBrightness(LightLayer.BLOCK, BlockPos.containing(vec3)) > brightness)
                 return false;
             else {
                 this.path = this.pathNav.createPath(vec3.x, vec3.y, vec3.z, 0);

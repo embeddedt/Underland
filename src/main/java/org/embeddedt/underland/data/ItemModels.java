@@ -1,13 +1,14 @@
 package org.embeddedt.underland.data;
 
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.embeddedt.underland.Underland;
 
 public class ItemModels extends ItemModelProvider {
 
-    public ItemModels(DataGenerator generator, ExistingFileHelper existingFileHelper) {
+    public ItemModels(PackOutput generator, ExistingFileHelper existingFileHelper) {
         super(generator, Underland.MODID, existingFileHelper);
     }
 

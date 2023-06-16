@@ -30,5 +30,6 @@
     "recipes": [
       "underland:teleporter"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }
