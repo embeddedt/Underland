@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
@@ -81,6 +82,7 @@ public class Underland {
             ).apply(builder, UnderlandOreBiomeModifier::new)));
 
     public static final RegistryObject<CreativeModeTab> ITEM_GROUP = CREATIVE_TABS.register(TAB_NAME, () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.underland"))
             .icon(() -> TELEPORTER_ITEM.get().getDefaultInstance())
             .displayItems((flags, output) -> {
                 output.accept(TELEPORTER_ITEM.get());
